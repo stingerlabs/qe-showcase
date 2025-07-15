@@ -1,7 +1,7 @@
 # API Testing Task
 
 **Goal:**  
-Test the `/posts` endpoint on [jsonplaceholder.typicode.com](https://jsonplaceholder.typicode.com) using any API testing approach.
+Test the `/posts` endpoint on [jsonplaceholder.typicode.com](https://jsonplaceholder.typicode.com) using any API testing approach. As part of your solution, consider how you might use both graphical and command-line tools available in this repository to demonstrate your API testing workflow.
 
 **Steps to cover:**
 
