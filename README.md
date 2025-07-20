@@ -6,21 +6,23 @@ This project contains an end-to-end automated test for the *SauceDemo* sample we
 
 ## Project Structure
 
-cypress/
-├── e2e/
-│ └── e2etest.cy.js # Main test script (E2E checkout flow)
-├── support/
-│ └── pageObjects/ # Page classes for POM implementation
-│   ├── loginPage.cy.js
-│   ├── products.cy.js
-│   ├── cart.cy.js
-│   ├── checkout.cy.js
-│   ├── checkoutOverview.cy.js
-│   └── complete.cy.js
-├── fixtures/
-│ └── e2eTestdata.json # Test data for input
-cypress.config.js # Cypress project configuration
-README.md # Solution overview (this file)
+qe-showcase/
+├── cypress/
+│   ├── e2e/
+│   │   └── e2etest.cy.js            # Your main E2E test
+│   ├── fixtures/
+│   │   └── e2eTestdata.json              # Test data
+│   ├── support/
+│   │   └── pageObjects/                  # Page Object Model classes
+│   │       ├── loginPage.cy.js
+│   │       ├── productsPage.cy.js
+│   │       ├── cart.cy.js
+│   │       ├── checkout.cy.js
+│   │       ├── checkoutOverview.cy.js
+│   │       └── complete.cy.js
+├── cypress.config.js                      # Cypress configuration (small changes optional)
+├── README.md                              # Solution overview
+
 
 ---
 
