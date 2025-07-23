@@ -1,0 +1,27 @@
+{
+  "name": "newman",
+  "version": "1.0.0",
+  "description": "**Goal:**   Test the `/posts` endpoint on [jsonplaceholder.typicode.com](https://jsonplaceholder.typicode.com) using any API testing approach.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "npx jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "superagent": "^10.2.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.1.0",
+    "@types/superagent": "^8.1.9",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
+    "ts-jest": "^29.4.0",
+    "typescript": "^5.8.3"
+  }
+}
