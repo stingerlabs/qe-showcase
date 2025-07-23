@@ -47,7 +47,7 @@ describe(`Test POSTS`,()=>{
             expect(body.userId).toBe(payload.userId)
             assertCommonHeaders(headers,true)
         })
-        
+
         it(`can get a post by id`,async ()=>{
             const payload = initialPayloadValue
             const {status, body, headers} = await agent.get(`${host}/posts/${createdPostId}`)
@@ -61,7 +61,20 @@ describe(`Test POSTS`,()=>{
             expect(body.userId).toBe(payload.userId)
             assertCommonHeaders(headers,true)
         })
-
+        it(`can update a post with put by id`,async ()=>{
+            const payload = initialPayloadValue
+            payload.title = 'New Updated Title'
+            const {status, body, headers} = await agent.put(`${host}/posts/${createdPostId}`)
+                .ok((res)=>res.status< 502)
+                .send(payload)
+                .set('Origin', 'http://example.com')
+            expect(status).toBe(200) //https://www.rfc-editor.org/rfc/rfc9110.html#name-200-ok
+            expect(body.id).toBe(createdPostId)
+            expect(body.body).toBe(payload.body)
+            expect(body.title).toBe(payload.title)
+            expect(body.userId).toBe(payload.userId)
+            assertCommonHeaders(headers,true)
+        })
     })
 
     describe(`negative path`, ()=>{
