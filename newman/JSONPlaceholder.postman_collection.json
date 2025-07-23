@@ -1,0 +1,1025 @@
+{
+	"info": {
+		"_postman_id": "f98cebc2-80d9-4886-a592-5520af6b254e",
+		"name": "JSONPlaceholder",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46819372",
+		"_collection_link": "https://www.postman.com/sureshjayam-6788781/workspace/testapi/collection/46819372-f98cebc2-80d9-4886-a592-5520af6b254e?action=share&source=collection_link&creator=46819372"
+	},
+	"item": [
+		{
+			"name": "GET Posts",
+			"item": [
+				{
+					"name": "Get all Posts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response is an array of posts\", function() \r",
+									"{\r",
+									"    let jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"    //Validating length of array as 100\r",
+									"    pm.expect(jsonData.length).to.be.eql(100);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"First object has expected keys\", function () {\r",
+									"  const jsonData = pm.response.json();\r",
+									"\r",
+									"  const firstPost = jsonData[0];\r",
+									"  pm.expect(firstPost).to.have.property('userId');\r",
+									"  pm.expect(firstPost).to.have.property('id');\r",
+									"  pm.expect(firstPost).to.have.property('title');\r",
+									"  pm.expect(firstPost).to.have.property('body');\r",
+									"\r",
+									"  //Validating data types\r",
+									"  pm.expect(firstPost.userId).to.be.a('number');\r",
+									"  pm.expect(firstPost.title).to.be.a('string');\r",
+									"  pm.expect(firstPost.body).to.be.a('string');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}/posts",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Posts invalid Id_fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response is an array of posts\", function() \r",
+									"{\r",
+									"    let jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"    pm.expect(jsonData.length).to.be.eql(100);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}/posts/-1",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts",
+								"-1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "POST new Posts - Validations",
+			"item": [
+				{
+					"name": "Post new post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Check if the response status code is 201 (Created)\r",
+									"pm.test(\"Status code is 201\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"var responseData = pm.response.json()\r",
+									"pm.test(\"Response has an ID\", () => {\r",
+									"  pm.expect(responseData).to.have.property(\"id\");\r",
+									"});\r",
+									"\r",
+									"//Set new Post id to \"newId\" in Environment\r",
+									"pm.collectionVariables.set(\"newId\", responseData.id)\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"title\" : \"Summer in Denmark\",\r\n\"body\" : \"Summer is generally from June to August and its perfect time to be out\",\r\n\"userId\" : \"2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/posts",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post new post Invalid userId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"var responseData = pm.response.json()\r",
+									"pm.test(\"Response has an ID\", () => {\r",
+									"  pm.expect(responseData).to.have.property(\"id\");\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"newId\", responseData.id)\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"title\" : \"Summer in Denmark\",\r\n\"body\" : \"Summer is generally from June to August and its perfect time to be out\",\r\n\"userId\" : \"123ab/_a\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/posts",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post new post userId twice",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"var responseData = pm.response.json()\r",
+									"pm.test(\"Response has an ID\", () => {\r",
+									"  pm.expect(responseData).to.have.property(\"id\");\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"newId\", responseData.id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"title\" : \"Summer in Denmark\",\r\n\"body\" : \"Summer is generally from June to August and its perfect time to be out\",\r\n\"userId\" : \"abcd\",\r\n\"userId\" : \"abcd1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/posts",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post new post without userId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"var responseData = pm.response.json()\r",
+									"pm.test(\"Response has an ID\", () => {\r",
+									"  pm.expect(responseData).to.have.property(\"id\");\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"newId\", responseData.id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"title\" : \"Summer in Denmark\",\r\n\"body\" : \"Summer is generally from June to August and its perfect time to be out\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/posts",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post new post without title",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"var responseData = pm.response.json()\r",
+									"pm.test(\"Response has an ID\", () => {\r",
+									"  pm.expect(responseData).to.have.property(\"id\");\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"newId\", responseData.id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n\"body\" : \"Summer is generally from June to August and its perfect time to be out\",\r\n\"userId\" : \"10\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/posts",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post new post long title",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"var responseData = pm.response.json()\r",
+									"pm.test(\"Response has an ID\", () => {\r",
+									"  pm.expect(responseData).to.have.property(\"id\");\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"newId\", responseData.id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"title\" : \"Summer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out Summer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outvSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outvSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outvSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outvvSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outvSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outvvSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be outSummer in Denmark, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generaSummer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out, Summer is generally from June to August and its perfect time to be out\",\r\n\"body\" : \"Summer is generally from June to August and its perfect time to be out\",\r\n\"userId\" : \"abcd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/posts",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post new post duplicate title",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"var responseData = pm.response.json()\r",
+									"pm.test(\"Response has an ID\", () => {\r",
+									"  pm.expect(responseData).to.have.property(\"id\");\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"newId\", responseData.id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"title\" : \"Summer in Denmark\",\r\n\"body\" : \"Summer is generally from June to August and its perfect time to be out\",\r\n\"userId\": \"8\",\r\n\"title\" : \"duplicate title\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/posts",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post new post_null fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"var responseData = pm.response.json()\r",
+									"pm.test(\"Response has an ID\", () => {\r",
+									"  pm.expect(responseData).to.have.property(\"id\");\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"newId\", responseData.id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": null, \r\n    \"body\": null, \r\n    \"userId\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/posts",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post new post_invalid data types",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"var responseData = pm.response.json()\r",
+									"pm.test(\"Response has an ID\", () => {\r",
+									"  pm.expect(responseData).to.have.property(\"id\");\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"newId\", responseData.id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": 123, \r\n    \"body\": false, \r\n    \"userId\": \"abc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/posts",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post new post without title, body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"var responseData = pm.response.json()\r",
+									"pm.test(\"Response has an ID\", () => {\r",
+									"  pm.expect(responseData).to.have.property(\"id\");\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"newId\", responseData.id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"userId\" : \"abcd1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/posts",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post new post_invalid endpoint_fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"var responseData = pm.response.json()\r",
+									"pm.test(\"Response has an ID\", () => {\r",
+									"  pm.expect(responseData).to.have.property(\"id\");\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"newId\", responseData.id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"userId\" : \"abcd1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/postss",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"postss"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PUT Post",
+			"item": [
+				{
+					"name": "Updating post by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"//PUT should return updated content\r",
+									"pm.test(\"Update success\", () => {\r",
+									"  pm.expect(pm.response.json().title).to.eql(\"this is new title for first message\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"this is new title for first message\",\r\n  \"body\": \"yes, updating body also\",\r\n  \"userId\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/posts/1",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Updating post_mismatched id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n  \"title\": \"this is new title for first message\",\r\n  \"body\": \"yes, updating body also\",\r\n  \"userId\": \"1\",\r\n  \"id\" : \"201\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/posts/10",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Updating post_without Id_fail",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n  \"title\": \"this is new title for first message\",\r\n  \"body\": \"yes, updating body also\",\r\n  \"userId\": \"1\",\r\n  \"id\" : \"201\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/posts/",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DELETE Post",
+			"item": [
+				{
+					"name": "Deleting post by Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Checking for successful deletion\r",
+									"pm.test(\"Status code is 200\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"//Checking empty response body\r",
+									"pm.test(\"Response has no content\", () => {\r",
+									"  pm.expect(pm.response.text()).to.eql('{}');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}/posts/1",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Error Simulations",
+			"item": [
+				{
+					"name": "GET - Invalid Domain",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Fail gracefully if server not found\", function () {\r",
+									"  if (!pm.response) {\r",
+									"    console.log(\"No response received. Possibly a DNS issue.\");\r",
+									"    return;\r",
+									"  }\r",
+									"  pm.expect(pm.response.code).to.not.equal(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://invaliddomain1234567.com/posts",
+							"protocol": "https",
+							"host": [
+								"invaliddomain1234567",
+								"com"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET – Timeout Simulation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Handles timeout or connection refusal\", function () {\r",
+									"  if (!pm.response) {\r",
+									"    console.warn(\"No response received. Timeout or port error likely.\");\r",
+									"  } else {\r",
+									"    pm.expect(pm.response.code).to.not.equal(200);\r",
+									"  }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://postman-echo.com:12345/get",
+							"protocol": "https",
+							"host": [
+								"postman-echo",
+								"com"
+							],
+							"port": "12345",
+							"path": [
+								"get"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Invalid Endpoint (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return 404 for invalid path\", function () {\r",
+									"  pm.response.to.have.status(404);\r",
+									"  const json = pm.response.json();\r",
+									"  console.log(\"Error body:\", json);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}/posts/invalidpath",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts",
+								"invalidpath"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Posts - server error (Mock server)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() \r",
+									"{\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response is an array of posts\", function() \r",
+									"{\r",
+									"    let jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"    //Validating length of array as 100\r",
+									"    pm.expect(jsonData.length).to.be.eql(100);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"First object has expected keys\", function () {\r",
+									"  const jsonData = pm.response.json();\r",
+									"\r",
+									"  const firstPost = jsonData[0];\r",
+									"  pm.expect(firstPost).to.have.property('userId');\r",
+									"  pm.expect(firstPost).to.have.property('id');\r",
+									"  pm.expect(firstPost).to.have.property('title');\r",
+									"  pm.expect(firstPost).to.have.property('body');\r",
+									"\r",
+									"  //Validating data types\r",
+									"  pm.expect(firstPost.userId).to.be.a('number');\r",
+									"  pm.expect(firstPost.title).to.be.a('string');\r",
+									"  pm.expect(firstPost.body).to.be.a('string');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}/posts",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GET Posts - server error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{endpoint}}/posts",
+									"host": [
+										"{{endpoint}}"
+									],
+									"path": [
+										"posts"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date"
+								}
+							],
+							"body": "{\r\n  \"error\": \"Internal Server Error\",\r\n  \"message\": \"Unexpected condition encountered\"\r\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "newId",
+			"value": ""
+		}
+	]
+}
