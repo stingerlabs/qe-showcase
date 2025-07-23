@@ -87,7 +87,12 @@ describe(`Test POSTS`,()=>{
     })
 
     describe(`negative path`, ()=>{
-
+        it(`cannot get a post with invalid id`,async ()=>{
+            const {status, body, headers} = await agent.get(`${host}/posts/invalid`).ok((res)=>res.status< 502)
+            console.log({status, headers})
+            expect(status).toBe(400) //this api is expecting a number, string should throw 400 due to validation error
+            assertCommonHeaders(headers)
+        })
     })
 })
 
