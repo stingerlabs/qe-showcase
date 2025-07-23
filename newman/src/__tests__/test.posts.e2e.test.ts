@@ -27,8 +27,26 @@ function assertCommonHeaders(headers:{[k:string]:any}, useCors?:boolean) {
 
 
 describe(`Test POSTS`,()=>{
+    const generatePost = dataGenerator()
     describe(`happy path`, ()=>{
-
+        //We get our initial payload set
+        const initialPayloadValue = generatePost.next().value
+        let createdPostId: number // to store id back from api
+        
+        it(`can create a post`,async ()=>{
+            const payload = initialPayloadValue
+            const {status, body, headers} = await agent.post(`${host}/posts`)
+                .ok((res)=>res.status< 502)
+                .set('Origin', 'http://example.com')
+                .send(payload)
+            expect(status).toBe(201) //https://www.rfc-editor.org/rfc/rfc9110.html#name-201-created
+            expect(body.id).toBeDefined()
+            createdPostId = body.id //store id for further use, we want to store this even if rest of asserts fail
+            expect(body.body).toBe(payload.body)
+            expect(body.title).toBe(payload.title)
+            expect(body.userId).toBe(payload.userId)
+            assertCommonHeaders(headers,true)
+        })
     })
 
     describe(`negative path`, ()=>{
