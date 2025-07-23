@@ -98,6 +98,11 @@ describe(`Test POSTS`,()=>{
             expect(status).toBe(400)
             assertCommonHeaders(headers)
         })
+        it(`cannot put a post with invalid id`,async ()=>{
+            const {status, body, headers} = await agent.put(`${host}/posts/invalid`).ok((res)=>res.status< 502)
+            expect(status).toBe(400) // this test currently 500 status on their servers
+            assertCommonHeaders(headers)
+        })
     })
 })
 
