@@ -93,6 +93,11 @@ describe(`Test POSTS`,()=>{
             expect(status).toBe(400) //this api is expecting a number, string should throw 400 due to validation error
             assertCommonHeaders(headers)
         })
+        it(`cannot delete a post with invalid id`,async ()=>{
+            const {status, body, headers} = await agent.delete(`${host}/posts/invalid`).ok((res)=>res.status< 502)
+            expect(status).toBe(400)
+            assertCommonHeaders(headers)
+        })
     })
 })
 
