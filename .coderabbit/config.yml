@@ -1,0 +1,3 @@
+# CodeRabbit Configuration
+# This disables CodeRabbit's automated code review features for this repository
+enabled: false
