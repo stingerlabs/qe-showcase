@@ -75,6 +75,15 @@ describe(`Test POSTS`,()=>{
             expect(body.userId).toBe(payload.userId)
             assertCommonHeaders(headers,true)
         })
+
+        it(`can delete a post with by id`,async ()=>{
+            const {status, body, headers} = await agent.delete(`${host}/posts/${createdPostId}`)
+                .ok((res)=>res.status< 502)
+                .set('Origin', 'http://example.com')
+            expect(body).toEqual({})
+            expect(status).toBe(204) // delete request has no body therefore: 204 https://www.rfc-editor.org/rfc/rfc9110.html#name-204-no-content
+            assertCommonHeaders(headers,true)
+        })
     })
 
     describe(`negative path`, ()=>{
