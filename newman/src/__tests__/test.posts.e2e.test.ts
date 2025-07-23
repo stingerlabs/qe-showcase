@@ -32,7 +32,7 @@ describe(`Test POSTS`,()=>{
         //We get our initial payload set
         const initialPayloadValue = generatePost.next().value
         let createdPostId: number // to store id back from api
-        
+
         it(`can create a post`,async ()=>{
             const payload = initialPayloadValue
             const {status, body, headers} = await agent.post(`${host}/posts`)
@@ -47,6 +47,21 @@ describe(`Test POSTS`,()=>{
             expect(body.userId).toBe(payload.userId)
             assertCommonHeaders(headers,true)
         })
+        
+        it(`can get a post by id`,async ()=>{
+            const payload = initialPayloadValue
+            const {status, body, headers} = await agent.get(`${host}/posts/${createdPostId}`)
+                .ok((res)=>res.status< 502)
+                .set('Origin', 'http://example.com')
+            console.log(`${createdPostId}, ${JSON.stringify(body)} ${status}`)
+            expect(status).toBe(200) //https://www.rfc-editor.org/rfc/rfc9110.html#name-200-ok
+            expect(body.id).toBe(createdPostId)
+            expect(body.body).toBe(payload.body)
+            expect(body.title).toBe(payload.title)
+            expect(body.userId).toBe(payload.userId)
+            assertCommonHeaders(headers,true)
+        })
+
     })
 
     describe(`negative path`, ()=>{
