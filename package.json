@@ -1,16 +1,14 @@
 {
   "name": "gg-qe-showcase",
   "version": "1.0.0",
-  "description": "Tooling for QE showcase: Cypress, K6, and Newman included for candidate convenience.",
+  "description": "Tooling for QE showcase: Cypress and Newman included for candidate convenience.",
   "private": true,
   "scripts": {
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "k6": "k6 run ./your-script.js",
     "newman": "newman run ./your-collection.json"
   },
   "dependencies": {
-    "@types/k6": "^1.1.1",
     "cypress": "^14.5.1",
     "newman": "^6.1.2"
   }

@@ -9,18 +9,17 @@ Pick **one** of the following paths (see `/tasks/` for details):
 
 - **Cypress**: Write an end-to-end test for a sample web app.
 - **Postman**: Create an API test collection.
-- **k6**: Script a basic load test.
 
 **What we care about:**
 
 - How you structure your code and tests
 - Realistic assertions and thoughtful test cases
-- Clear communication (in code, comments, and your PR)
-- Basic Git usage (branch, commit, PR)
+- Clear communication (in code and comments)
+- Basic Git usage (branch, commit)
 
-**What we _don’t_ care about:**
+**What we _don't_ care about:**
 
-- Perfection or “the right answer”
+- Perfection or "the right answer"
 - Full coverage or edge cases
 - Build pipelines or automation
 
@@ -29,9 +28,9 @@ Pick **one** of the following paths (see `/tasks/` for details):
 1. Fork this repo.
 2. Pick a task from `/tasks/` and follow the instructions.
 3. Don't spend more than an hour on this.
-4. Open a PR with your solution. Use the PR template to tell us about your approach.
+4. Complete your solution and be ready to discuss your approach.
 
-We’ll leave comments and may ask questions — we’re interested in your reasoning and how you respond, not just what you build.
+We'll leave comments and may ask questions — we're interested in your reasoning and how you respond, not just what you build.
 
 **Have fun, and thank you for sharing your process with us!**
 
@@ -39,10 +38,9 @@ We’ll leave comments and may ask questions — we’re interested in your reas
 
 ## Getting Started with Tooling
 
-This repo includes the tools you’ll need for any of the tasks:
+This repo includes the tools you'll need for any of the tasks:
 
 - **Cypress** (UI/E2E)
-- **k6** (load testing)
 - **Newman** (run Postman collections from the command line)
 
 **Install dependencies:**
@@ -57,11 +55,6 @@ npm install
   `npm run cypress:open`
 - Run headless:  
   `npm run cypress:run`
-
-**Run k6:**
-
-- `npm run k6`  
-  (Edit the script path as needed)
 
 **Run Newman:**
 

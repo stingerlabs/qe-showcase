@@ -6,7 +6,7 @@ _Describe your approach, what you focused on, and any tradeoffs you made._
 
 ## What would you improve with more time?
 
-_List anything you’d refactor, add, or do differently._
+_List anything you'd refactor, add, or do differently._
 
 ---
 
@@ -14,7 +14,6 @@ _List anything you’d refactor, add, or do differently._
 
 - [ ] Cypress
 - [ ] Postman
-- [ ] k6
 
 ---
 
