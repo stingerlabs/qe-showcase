@@ -1,0 +1,14 @@
+{
+    "name": "api-tests",
+    "private": true,
+    "scripts": {
+      "test:posts": "node runner.js",
+      "test:posts:reports": "mkdir -p reports && npx newman run collections/posts.postman_collection.json -e environments/posts-env.postman_environment.json -r cli,htmlextra --reporter-htmlextra-export reports/posts.html"
+    },
+    "dependencies": {
+      "chai": "^5.1.0",
+      "newman": "^6.1.0",
+      "newman-reporter-htmlextra": "^1.23.0"
+    }
+  }
+  
