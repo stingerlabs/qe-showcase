@@ -9,7 +9,21 @@
     "newman": "newman run ./your-collection.json"
   },
   "dependencies": {
-    "cypress": "^14.5.1",
     "newman": "^6.1.2"
+  },
+  "main": "cypress.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jwparsons-qe/qe-showcase.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jwparsons-qe/qe-showcase/issues"
+  },
+  "homepage": "https://github.com/jwparsons-qe/qe-showcase#readme",
+  "devDependencies": {
+    "cypress": "^14.5.4"
   }
 }
