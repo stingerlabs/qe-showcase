@@ -1,8 +1,7 @@
 /**
- * Sauce Demo Purchase Flow - World Class E2E Testing
+ * Sauce Demo Purchase Flow - E2E Testing
  * Covers all required steps: Login → Sort → Add to Cart → Checkout → Complete → Verify Success
- * 
- * WORLD CLASS APPROACH: TRUE atomic tests, business-focused, minimal code, maximum coverage
+ *
  * Uses fixtures to avoid hardcoded values
  * 
  * KEY DECISIONS:
@@ -97,11 +96,11 @@ describe('Sauce Demo Purchase Flow', () => {
       cy.completePurchase();
     });
     
-    // Multiple verification strategies for robustness
+    // Multiple verification strategies 
     cy.get('[data-test="complete-header"]').should('contain', productsData.messages.order_success_header);
     cy.get('[data-test="back-to-products"]').should('be.visible');
     cy.get('body').should('contain', 'Thank you');
-    cy.get('[data-test="firstName"]').should('not.exist'); // No more checkout form
+    cy.get('[data-test="firstName"]').should('not.exist');
   });
 
   // Single responsibility: Edge case handling only
