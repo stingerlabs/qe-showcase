@@ -54,7 +54,7 @@ Cypress.Commands.add('checkoutFlow', (product, address, { finish = true } = {}) 
 });
 
 // Verification helpers
-Cypress.Commands.add('verifyCartBadgeCount', (expectedCount) => InventoryPage.assertCartBadgeCount(expectedCount));
+Cypress.Commands.add('verifyCartBadgeCount', (expectedCount) => InventoryPage.verifyCartBadgeCount(expectedCount));
 Cypress.Commands.add('verifyProductsSorted', (criteria, direction = 'ascending') => {
-  criteria.includes('Price') ? InventoryPage.assertProductsSortedByPrice(direction) : InventoryPage.assertProductsSortedByName(direction);
+  criteria.includes('Price') ? InventoryPage.verifyProductsSortedByPrice(direction) : InventoryPage.verifyProductsSortedByName(direction);
 });
