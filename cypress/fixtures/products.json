@@ -1,0 +1,28 @@
+{
+  "products": {
+    "backpack": "Sauce Labs Backpack",
+    "bike_light": "Sauce Labs Bike Light",
+    "bolt_tshirt": "Sauce Labs Bolt T-Shirt",
+    "fleece_jacket": "Sauce Labs Fleece Jacket",
+    "onesie": "Sauce Labs Onesie",
+    "red_tshirt": "Test.allTheThings() T-Shirt (Red)"
+  },
+  "sort_options": {
+    "price_low_high": "Price (low to high)",
+    "price_high_low": "Price (high to low)",
+    "name_a_z": "Name (A to Z)",
+    "name_z_a": "Name (Z to A)"
+  },
+  "page_titles": {
+    "products": "Products",
+    "cart": "Your Cart",
+    "checkout_info": "Checkout: Your Information",
+    "checkout_overview": "Checkout: Overview",
+    "checkout_complete": "Checkout: Complete!"
+  },
+  "messages": {
+    "order_success_header": "Thank you for your order!",
+    "order_success_text": "Your order has been dispatched",
+    "back_to_products": "Back Home"
+  }
+}
