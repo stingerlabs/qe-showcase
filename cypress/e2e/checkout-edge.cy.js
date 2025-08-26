@@ -1,12 +1,11 @@
 /**
  * Checkout Edge Case Tests
  * Dedicated test suite for checkout form edge cases
- *
- * WORLD CLASS APPROACH: Focused testing of edge cases with clean setup
+ * 
+ * APPROACH: Focused testing of edge cases with clean setup
  * Demonstrates data-driven testing and reusable flows
  * Uses fixtures to avoid hardcoded values
  */
-
 describe('Checkout Edge Case Tests', () => {
   let productsData;
 
