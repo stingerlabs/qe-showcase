@@ -1,0 +1,18 @@
+{
+  "standard_user": {
+    "username": "standard_user",
+    "password": "secret_sauce",
+    "description": "Standard user with full access to all features"
+  },
+  "locked_user": {
+    "username": "locked_out_user",
+    "password": "secret_sauce",
+    "description": "User account that is locked out",
+    "expectedError": "Epic sadface: Sorry, this user has been locked out."
+  },
+  "problem_user": {
+    "username": "problem_user",
+    "password": "secret_sauce",
+    "description": "User with known UI issues for testing edge cases"
+  }
+}

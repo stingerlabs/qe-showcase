@@ -6,10 +6,17 @@
   "scripts": {
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "newman": "newman run ./your-collection.json"
+    "newman": "newman run ./your-collection.json",
+    "lint": "eslint cypress/e2e/**/*.js cypress/support/**/*.js",
+    "lint:fix": "eslint cypress/e2e/**/*.js cypress/support/**/*.js --fix"
   },
   "dependencies": {
     "cypress": "^14.5.1",
     "newman": "^6.1.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-plugin-cypress": "^2.15.1",
+    "@eslint/js": "^9.34.0"
   }
 }

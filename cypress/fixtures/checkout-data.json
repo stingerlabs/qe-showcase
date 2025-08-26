@@ -1,0 +1,26 @@
+{
+  "valid_address": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "postalCode": "12345",
+    "description": "Standard valid address"
+  },
+  "long_names": {
+    "firstName": "Alexander",
+    "lastName": "Montgomery-Smythe",
+    "postalCode": "90210",
+    "description": "Long names to test input handling"
+  },
+  "special_chars": {
+    "firstName": "José",
+    "lastName": "O'Connor",
+    "postalCode": "A1B2C3",
+    "description": "Special characters and apostrophes"
+  },
+  "edge_cases": {
+    "firstName": "X",
+    "lastName": "Y",
+    "postalCode": "1",
+    "description": "Minimal length inputs"
+  }
+}
