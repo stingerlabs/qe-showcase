@@ -67,7 +67,7 @@ A test that can't fail when the product breaks is worse than no test.
 |------|------------|
 | Public demo sites are slow/down/rate-limited | Tolerant timeouts (10s command / 30s page load); 1 retry in `runMode` only — enough to absorb a network blip, not enough to mask a real regression. Open mode has 0 retries so flake is visible during development |
 | React re-renders detaching elements | Action and assertion split into separate queries; order assertions use retrying `.should(callback)` instead of `.then` (a detached-`<select>` failure was hit and fixed during development — see BUG_NOTES) |
-| Selector brittleness | Every selector goes through `data-test` attributes (via `cy.getByDataTest`); zero CSS-class or DOM-position selectors |
+| Selector brittleness | Every selector goes through `data-test` attributes (via `cy.getByDataTest`) and lives in exactly one page object under `cypress/pages/`; zero CSS-class or DOM-position selectors, and a markup change is a one-file fix |
 | Test-order coupling | Cypress `testIsolation` stays on; every spec logs in fresh through the UI; no test consumes state from another. Newman requests are each self-contained (the one cross-request variable, `createdPostId`, is reporting-only) |
 | Hard waits papering over timing | No `cy.wait(ms)` anywhere; only retrying queries and assertions |
 

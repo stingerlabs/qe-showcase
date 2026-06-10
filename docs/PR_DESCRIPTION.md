@@ -31,6 +31,11 @@ full-scope/bonus coverage**:
 - `sorting.cy.js` — all four sort options, each verified against the rendered
   result (data-driven).
 
+Structured as a page object model: classes under `cypress/pages/` (one per
+page, plus a shared header component) own every selector, action, and
+load-state guard, so specs contain no raw selectors — only orchestration and
+business assertions. A markup change is a one-file fix.
+
 **API (Postman collection v2.1 + environment, run via Newman)** — 7 requests,
 20 assertions against JSONPlaceholder `/posts`: GET list (100 seeded posts,
 unique ids 1..100, full schema, authors within the 10 seeded users), GET
@@ -59,9 +64,9 @@ and `?userId=1` filtering (exactly the author's 10 posts).
   behaviour, API response contracts) and pinned assertions to what the live
   services actually return — e.g. JSONPlaceholder's `201`/`id: 101` create,
   `{}` bodies on delete/404, verified by inspection before being asserted.
-- Wrote specs selector-first against SauceDemo's stable `data-test` attributes
-  via a `cy.getByDataTest` command — no CSS-class or DOM-position selectors,
-  no `cy.wait(ms)` anywhere.
+- Wrote the UI layer page-object-first against SauceDemo's stable `data-test`
+  attributes (page objects build on a `cy.getByDataTest` command) — no
+  CSS-class or DOM-position selectors, no `cy.wait(ms)` anywhere.
 - Money handled in integer cents (`parseUsdToCents` helper, throws loudly on
   unparseable input) to keep totals math exact and false-pass resistant.
 - Ran suites repeatedly while iterating; caught and fixed a real detached-DOM

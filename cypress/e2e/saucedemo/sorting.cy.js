@@ -1,3 +1,4 @@
+const { loginPage, inventoryPage } = require("../../pages");
 const {
   parseUsdToCents,
   textsOf,
@@ -11,49 +12,46 @@ const {
 // option later is a one-line change.
 describe("SauceDemo product sorting", () => {
   beforeEach(() => {
-    cy.fixture("saucedemo/users").then(({ standard }) => cy.loginAs(standard));
-    cy.getByDataTest("inventory-list").should("be.visible");
+    cy.fixture("saucedemo/users").then(({ standard }) => loginPage.loginAs(standard));
+    inventoryPage.assertLoaded();
   });
 
   const sortCases = [
     {
       option: "az",
       describeAs: "Name (A to Z) sorts product names ascending",
-      extractFrom: "inventory-item-name",
+      elements: () => inventoryPage.itemNames(),
       toValues: textsOf,
       expectOrder: expectSortedAscending,
     },
     {
       option: "za",
       describeAs: "Name (Z to A) sorts product names descending",
-      extractFrom: "inventory-item-name",
+      elements: () => inventoryPage.itemNames(),
       toValues: textsOf,
       expectOrder: expectSortedDescending,
     },
     {
       option: "lohi",
       describeAs: "Price (low to high) sorts displayed prices ascending",
-      extractFrom: "inventory-item-price",
+      elements: () => inventoryPage.itemPrices(),
       toValues: ($els) => textsOf($els).map(parseUsdToCents),
       expectOrder: expectSortedAscending,
     },
     {
       option: "hilo",
       describeAs: "Price (high to low) sorts displayed prices descending",
-      extractFrom: "inventory-item-price",
+      elements: () => inventoryPage.itemPrices(),
       toValues: ($els) => textsOf($els).map(parseUsdToCents),
       expectOrder: expectSortedDescending,
     },
   ];
 
-  sortCases.forEach(({ option, describeAs, extractFrom, toValues, expectOrder }) => {
+  sortCases.forEach(({ option, describeAs, elements, toValues, expectOrder }) => {
     it(describeAs, () => {
-      // Select and assert as separate queries — the app re-renders the select
-      // on change, which would detach a chained subject.
-      cy.getByDataTest("product-sort-container").select(option);
-      cy.getByDataTest("product-sort-container").should("have.value", option);
+      inventoryPage.sortBy(option);
       // .should(callback) retries until the re-sorted list settles, unlike .then.
-      cy.getByDataTest(extractFrom).should(($els) => expectOrder(toValues($els)));
+      elements().should(($els) => expectOrder(toValues($els)));
     });
   });
 });

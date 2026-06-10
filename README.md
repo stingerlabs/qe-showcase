@@ -104,7 +104,8 @@ cypress/
     cart.cy.js                 # remove item: badge + cart agree
     sorting.cy.js              # all 4 sort options, order actually verified
   fixtures/saucedemo/          # users + checkout customer data
-  support/                     # getByDataTest/loginAs commands, money & sort helpers
+  pages/                       # page objects (selectors/actions) + header component
+  support/                     # getByDataTest command, money & sort helpers
 newman/
   jsonplaceholder-posts.postman_collection.json   # 7 requests, 20 assertions
   jsonplaceholder.postman_environment.json        # baseUrl + existingPostId
