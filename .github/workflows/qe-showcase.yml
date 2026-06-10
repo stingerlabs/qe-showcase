@@ -1,0 +1,54 @@
+# Runs both suites on every push and PR.
+#
+# Heads-up: these tests exercise PUBLIC demo services (saucedemo.com and
+# jsonplaceholder.typicode.com). If either service is down or unreachable from
+# the runner, the corresponding job fails even though nothing in this repo is
+# broken. That tradeoff is accepted and documented in docs/TEST_STRATEGY.md.
+name: QE Showcase
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  api-tests:
+    name: API tests (Newman)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Run Newman collection
+        run: npm run test:api -- --reporters cli,json --reporter-json-export newman/results/newman-report.json
+      - name: Upload Newman JSON report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-report
+          path: newman/results/newman-report.json
+          if-no-files-found: ignore
+
+  ui-tests:
+    name: UI tests (Cypress)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Run Cypress headless
+        run: npm run test:ui
+      # Video recording is disabled in cypress.config.js, so screenshots are
+      # the failure evidence.
+      - name: Upload failure screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
