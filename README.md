@@ -80,6 +80,10 @@ full-scope/bonus coverage** of the JSONPlaceholder `/posts` API.
 npm ci
 ```
 
+**Node 20, 22, or 24+ is required** (Cypress 15 does not support odd-numbered
+releases like Node 23 — see `engines` in `package.json`; `.nvmrc` /
+`.node-version` pin 22 for version managers).
+
 `package-lock.json` is committed, so installs are reproducible. No secrets or
 `.env` files are needed — both targets are public demo services using public
 demo credentials.

@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Tooling for QE showcase: Cypress and Newman included for candidate convenience.",
   "private": true,
+  "engines": {
+    "node": "20.x || 22.x || >=24.x",
+    "npm": ">=10"
+  },
   "scripts": {
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",

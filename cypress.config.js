@@ -1,6 +1,12 @@
 const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
+  // This suite never reads Cypress.env() from browser code (the baseUrl
+  // override mentioned below uses config-level env, which is unaffected), so
+  // opt in to the future-default lockdown now and silence the Cypress 15
+  // deprecation warning.
+  allowCypressEnv: false,
+
   e2e: {
     // System under test. Override without touching code via the standard
     // Cypress env mechanism, e.g. CYPRESS_BASE_URL=https://staging.example.com

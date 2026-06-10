@@ -35,6 +35,32 @@ tests are written.
 
 ## Tooling (not committed-code issues)
 
-5. **Cypress 15 deprecation warning** about `allowCypressEnv` appears on every
-   run. Cosmetic at current version; no `Cypress.env()` usage in this suite
-   depends on it. Worth revisiting when Cypress 16 lands.
+5. **Cypress 15 deprecation warning about `allowCypressEnv` — resolved.**
+   The warning appeared on every run. The suite reads no `Cypress.env()` from
+   browser code (verified by repo-wide search), so `allowCypressEnv: false` is
+   now set in `cypress.config.js` — opting into the future-default lockdown.
+   Verified: warning no longer appears and all specs still pass (2026-06-10).
+
+6. **Node version constraint.** Cypress 15 supports Node `^20.1.0 || ^22.0.0
+   || >=24.0.0` — odd-numbered Node 23 is unsupported and warns at install.
+   `engines` in `package.json` plus `.nvmrc`/`.node-version` (22) now pin the
+   guidance; CI runs Node 20. (npm prints an `EBADENGINE` *warning* on
+   unsupported Nodes; installs still proceed since `engine-strict` is off.)
+
+7. **`npm audit` posture (evidence captured 2026-06-10, not blind-fixed).**
+   - `npm audit --omit=dev`: **0 vulnerabilities** — the repo has no
+     production runtime dependencies at all (Cypress and Newman are
+     devDependencies; nothing here ships to production).
+   - `npm audit` (full): **17 vulnerabilities (7 moderate, 9 high, 1
+     critical)** — every single one in **Newman's transitive tree**
+     (`postman-runtime`, `postman-sandbox`, `postman-collection`,
+     `postman-request` and their pins of `handlebars`, `lodash`, `node-forge`,
+     `flatted`, `jose`, `qs`, `underscore`, `uuid`). None are reachable in
+     production; they affect only local/CI test tooling that processes our own
+     committed collection against public demo APIs.
+   - **Why no forced upgrade:** `newman@6.2.2` is the latest published
+     release, so the issues are upstream and unfixable from this repo. npm's
+     only offered remediation (`npm audit fix --force`) "resolves" the tree by
+     downgrading to `newman@2.1.2` (2016-era, breaking) — strictly worse.
+     Accepted as dev-tooling risk; revisit when Postman ships updated runtime
+     packages.
