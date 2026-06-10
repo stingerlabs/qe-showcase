@@ -1,0 +1,392 @@
+{
+	"info": {
+		"_postman_id": "9b1f4c2e-5a73-4d8e-b6a1-3f2c8d9e0a41",
+		"name": "JSONPlaceholder /posts",
+		"description": "API tests for the public JSONPlaceholder /posts resource.\n\nIMPORTANT — fake persistence: JSONPlaceholder simulates writes. POST/PUT/DELETE return realistic responses (201 with a new id, echoed updates, empty delete body) but nothing is actually stored. Every assertion in this collection therefore targets *response behaviour* (status, headers, echoed payload, id rules) and never re-reads the API expecting a write to have persisted.\n\nRun via Newman: `npm run test:api` (uses newman/jsonplaceholder.postman_environment.json), or import collection + environment into the Postman UI.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"event": [
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Shared assertion helpers. Collection-level test scripts execute in the",
+					"// same sandbox as each request's test script (collection first), so these",
+					"// deliberately-undeclared assignments make the helpers available to every",
+					"// request below without copy-paste.",
+					"",
+					"expectJsonContentType = function () {",
+					"    pm.expect(pm.response.headers.get('Content-Type'), 'Content-Type header')",
+					"        .to.include('application/json');",
+					"};",
+					"",
+					"// A post must carry author linkage and content — not just \"be an object\".",
+					"expectPostShape = function (post, label) {",
+					"    pm.expect(post, label).to.be.an('object');",
+					"    pm.expect(post.userId, label + '.userId').to.be.a('number');",
+					"    pm.expect(post.id, label + '.id').to.be.a('number');",
+					"    pm.expect(post.title, label + '.title').to.be.a('string').and.to.not.be.empty;",
+					"    pm.expect(post.body, label + '.body').to.be.a('string').and.to.not.be.empty;",
+					"};"
+				]
+			}
+		}
+	],
+	"item": [
+		{
+			"name": "GET /posts (list all)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('returns HTTP 200 with a JSON content type', function () {",
+							"    pm.response.to.have.status(200);",
+							"    expectJsonContentType();",
+							"});",
+							"",
+							"const posts = pm.response.json();",
+							"",
+							"pm.test('returns the complete seeded collection of 100 posts', function () {",
+							"    pm.expect(posts).to.be.an('array');",
+							"    pm.expect(posts, 'seeded dataset size').to.have.lengthOf(100);",
+							"});",
+							"",
+							"pm.test('every post has the required author and content fields', function () {",
+							"    // Only 100 records, so shape-check the whole payload instead of sampling.",
+							"    posts.forEach(function (post, i) { expectPostShape(post, 'posts[' + i + ']'); });",
+							"});",
+							"",
+							"pm.test('post ids are unique', function () {",
+							"    const ids = posts.map(function (p) { return p.id; });",
+							"    pm.expect(new Set(ids).size, 'distinct ids').to.equal(posts.length);",
+							"});",
+							"",
+							"pm.test('payload is the canonical /posts dataset: ids span 1..100, authors are the 10 seeded users', function () {",
+							"    // Guards against getting *some* JSON array back that is not the posts",
+							"    // resource (e.g. a routing or proxy mix-up returning /comments).",
+							"    const ids = posts.map(function (p) { return p.id; });",
+							"    pm.expect(Math.min.apply(null, ids), 'lowest id').to.equal(1);",
+							"    pm.expect(Math.max.apply(null, ids), 'highest id').to.equal(100);",
+							"    posts.forEach(function (post, i) {",
+							"        pm.expect(post.userId, 'posts[' + i + '].userId within seeded users').to.be.within(1, 10);",
+							"    });",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/posts",
+					"host": ["{{baseUrl}}"],
+					"path": ["posts"]
+				},
+				"description": "Read the full seeded posts collection. JSONPlaceholder always serves the same 100 records, which makes exact-size and id-range assertions deterministic rather than flaky."
+			}
+		},
+		{
+			"name": "GET /posts/:id (single post)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('returns HTTP 200 with a JSON content type', function () {",
+							"    pm.response.to.have.status(200);",
+							"    expectJsonContentType();",
+							"});",
+							"",
+							"pm.test('returns exactly the requested post with a complete schema', function () {",
+							"    const post = pm.response.json();",
+							"    expectPostShape(post, 'post');",
+							"    // The id must round-trip from the environment-driven URL — catches",
+							"    // off-by-one routing bugs that a bare shape check would miss.",
+							"    pm.expect(post.id).to.equal(Number(pm.environment.get('existingPostId')));",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/posts/{{existingPostId}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["posts", "{{existingPostId}}"]
+				},
+				"description": "Read a single known post by id. The id comes from the environment so the same collection can be pointed at different data sets."
+			}
+		},
+		{
+			"name": "POST /posts (fake create)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// Unique-per-run payload: echo assertions can then never pass against",
+							"// stale, cached, or hardcoded server data.",
+							"const stamp = Date.now();",
+							"pm.collectionVariables.set('newPostTitle', 'qe-showcase post ' + stamp);",
+							"pm.collectionVariables.set('newPostBody', 'created by the qe-showcase newman run at ' + new Date(stamp).toISOString());",
+							"pm.collectionVariables.set('newPostUserId', '7');"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('fake create is accepted with HTTP 201 and a JSON body', function () {",
+							"    pm.response.to.have.status(201);",
+							"    expectJsonContentType();",
+							"});",
+							"",
+							"const created = pm.response.json();",
+							"",
+							"pm.test('response echoes the submitted payload exactly (no persistence assumed)', function () {",
+							"    pm.expect(created.title).to.equal(pm.collectionVariables.get('newPostTitle'));",
+							"    pm.expect(created.body).to.equal(pm.collectionVariables.get('newPostBody'));",
+							"    pm.expect(created.userId).to.equal(Number(pm.collectionVariables.get('newPostUserId')));",
+							"});",
+							"",
+							"pm.test('assigns a fresh id beyond the seeded range (JSONPlaceholder returns 101)', function () {",
+							"    // Asserting \"above the 100 seeded posts\" captures the business rule",
+							"    // (new resources get new ids) without hardcoding the literal 101.",
+							"    pm.expect(created.id, 'new id').to.be.a('number').and.to.be.above(100);",
+							"});",
+							"",
+							"// Kept for reporting/context only — the resource does NOT actually exist,",
+							"// so no later request may rely on it.",
+							"pm.collectionVariables.set('createdPostId', String(created.id));",
+							"console.info('JSONPlaceholder fake-created post id=' + created.id + ' (not persisted)');"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"{{newPostTitle}}\",\n    \"body\": \"{{newPostBody}}\",\n    \"userId\": {{newPostUserId}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/posts",
+					"host": ["{{baseUrl}}"],
+					"path": ["posts"]
+				},
+				"description": "Create a post with a payload generated per run (see pre-request script). JSONPlaceholder only *simulates* the write: it responds 201 with id 101 but stores nothing, so assertions stop at the response contract."
+			}
+		},
+		{
+			"name": "PUT /posts/:id (fake full replace)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('fake replace is accepted with HTTP 200 and a JSON body', function () {",
+							"    pm.response.to.have.status(200);",
+							"    expectJsonContentType();",
+							"});",
+							"",
+							"const replaced = pm.response.json();",
+							"",
+							"pm.test('keeps the resource id stable across a full replace', function () {",
+							"    pm.expect(replaced.id).to.equal(Number(pm.environment.get('existingPostId')));",
+							"});",
+							"",
+							"pm.test('echoes the full replacement document with valid types (no persistence assumed)', function () {",
+							"    expectPostShape(replaced, 'replaced');",
+							"    pm.expect(replaced.title).to.equal('qe-showcase replacement title');",
+							"    pm.expect(replaced.body).to.equal('full replacement body written by the qe-showcase newman run');",
+							"    pm.expect(replaced.userId).to.equal(7);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": {{existingPostId}},\n    \"title\": \"qe-showcase replacement title\",\n    \"body\": \"full replacement body written by the qe-showcase newman run\",\n    \"userId\": 7\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/posts/{{existingPostId}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["posts", "{{existingPostId}}"]
+				},
+				"description": "Full document replacement of an existing post. Static-but-distinctive payload keeps the request readable; the POST request already demonstrates dynamic data. The update is simulated by JSONPlaceholder — nothing persists."
+			}
+		},
+		{
+			"name": "DELETE /posts/:id (fake delete)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('fake delete is accepted with HTTP 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('returns an empty object — delete is simulated, nothing was removed', function () {",
+							"    // Observed JSONPlaceholder contract: 200 + {} (not 204/no-content).",
+							"    // A follow-up GET would still find the post, so persistence is",
+							"    // deliberately NOT asserted here.",
+							"    pm.expect(pm.response.json()).to.deep.equal({});",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/posts/{{existingPostId}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["posts", "{{existingPostId}}"]
+				},
+				"description": "Delete an existing post. JSONPlaceholder fakes the delete: it answers 200 with an empty object and keeps the record. Assertions therefore cover the response contract only."
+			}
+		},
+		{
+			"name": "GET /posts/999999 (missing post)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('missing post returns a deterministic HTTP 404', function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test('404 body is an empty JSON object, not an HTML error page', function () {",
+							"    // Observed JSONPlaceholder contract for unknown ids: {} with 404.",
+							"    // API consumers branching on body shape depend on this staying stable.",
+							"    pm.expect(pm.response.json()).to.deep.equal({});",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/posts/999999",
+					"host": ["{{baseUrl}}"],
+					"path": ["posts", "999999"]
+				},
+				"description": "Negative case: an id far outside the seeded 1..100 range must 404 deterministically rather than 200-with-empty-body or 500."
+			}
+		},
+		{
+			"name": "GET /posts?userId=1 (filter by author)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('returns HTTP 200 with a JSON content type', function () {",
+							"    pm.response.to.have.status(200);",
+							"    expectJsonContentType();",
+							"});",
+							"",
+							"const posts = pm.response.json();",
+							"",
+							"pm.test('filter returns a non-empty array containing only userId 1 posts', function () {",
+							"    pm.expect(posts).to.be.an('array').that.is.not.empty;",
+							"    posts.forEach(function (post, i) {",
+							"        pm.expect(post.userId, 'posts[' + i + '].userId').to.equal(1);",
+							"    });",
+							"});",
+							"",
+							"pm.test('returns the complete seeded set for the author (10 posts per user)', function () {",
+							"    // Each seeded user owns exactly 10 posts; fewer means the filter",
+							"    // dropped records, more means it leaked someone else's.",
+							"    pm.expect(posts).to.have.lengthOf(10);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/posts?userId=1",
+					"host": ["{{baseUrl}}"],
+					"path": ["posts"],
+					"query": [
+						{
+							"key": "userId",
+							"value": "1",
+							"description": "Seeded author to filter by."
+						}
+					]
+				},
+				"description": "Server-side filtering: the query parameter must constrain results to the requested author and return that author's complete set."
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "newPostTitle",
+			"value": "",
+			"description": "Set per run by the POST pre-request script."
+		},
+		{
+			"key": "newPostBody",
+			"value": "",
+			"description": "Set per run by the POST pre-request script."
+		},
+		{
+			"key": "newPostUserId",
+			"value": "",
+			"description": "Set per run by the POST pre-request script."
+		},
+		{
+			"key": "createdPostId",
+			"value": "",
+			"description": "Id echoed by the fake create — reporting/context only, never reused (nothing persists)."
+		}
+	]
+}
