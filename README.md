@@ -50,7 +50,7 @@ This repo includes the tools you'll need for any of the tasks:
 **Install dependencies:**
 
 ```bash
-npm install
+npm ci
 ```
 
 **Run Cypress:**
@@ -62,7 +62,73 @@ npm install
 
 **Run Newman:**
 
-- `npm run newman`  
-  (Edit the collection path as needed)
+- `npm run test:api`  
+  (Runs the committed collection under `newman/` — see below)
+
+---
+
+## Implemented solution
+
+Both task paths are implemented, since this submission completes the repo
+end-to-end. **Cypress is the primary path** (full SauceDemo purchase-flow
+coverage); the **Postman/Newman collection is included as completed
+full-scope/bonus coverage** of the JSONPlaceholder `/posts` API.
+
+### Setup
+
+```bash
+npm ci
+```
+
+**Node 20, 22, or 24+ is required** (Cypress 15 does not support odd-numbered
+releases like Node 23 — see `engines` in `package.json`; `.nvmrc` /
+`.node-version` pin 22 for version managers).
+
+`package-lock.json` is committed, so installs are reproducible. No secrets or
+`.env` files are needed — both targets are public demo services using public
+demo credentials.
+
+### Run
+
+| Command | What it does |
+|---------|--------------|
+| `npm run test:ui` | Cypress suite, headless |
+| `npm run test:api` | Newman run of the Postman collection |
+| `npm run test:all` | API suite, then UI suite |
+| `npm run cypress:open` | Cypress interactive runner |
+
+### Layout
+
+```
+cypress/
+  e2e/saucedemo/
+    purchase-flow.cy.js        # happy path: login → sort → cart → checkout → order
+    login.cy.js                # locked-out user negative path
+    checkout-validation.cy.js  # required-field errors, in order
+    cart.cy.js                 # remove item: badge + cart agree
+    sorting.cy.js              # all 4 sort options, order actually verified
+  fixtures/saucedemo/          # users + checkout customer data
+  pages/                       # page objects (selectors/actions) + header component
+  support/                     # getByDataTest command, money & sort helpers
+newman/
+  jsonplaceholder-posts.postman_collection.json   # 7 requests, 20 assertions
+  jsonplaceholder.postman_environment.json        # baseUrl + existingPostId
+  README.md                                       # API-suite details
+.github/workflows/qe-showcase.yml                 # CI: both suites on push/PR
+docs/
+  TEST_STRATEGY.md             # scope, risks, tradeoffs, what was skipped & why
+  PR_DESCRIPTION.md            # ready-to-paste PR body
+```
+
+### External dependencies — please read
+
+The suites run against **live public demo services**:
+[saucedemo.com](https://www.saucedemo.com) and
+[jsonplaceholder.typicode.com](https://jsonplaceholder.typicode.com). If either
+is down, slow, or rate-limiting, tests (and CI) can fail without anything in
+this repo being broken. JSONPlaceholder also **fakes all writes** —
+POST/PUT/DELETE return realistic responses but persist nothing, and the API
+tests are written accordingly. Details and mitigations: see
+[docs/TEST_STRATEGY.md](docs/TEST_STRATEGY.md).
 
 ---

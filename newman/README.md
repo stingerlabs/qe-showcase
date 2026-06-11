@@ -1,35 +1,66 @@
-# API Testing Task
+# JSONPlaceholder `/posts` API tests
 
-**Goal:**  
-Test the `/posts` endpoint on [jsonplaceholder.typicode.com](https://jsonplaceholder.typicode.com) using any API testing approach.
+Postman Collection (v2.1) + environment covering the `/posts` resource on
+[jsonplaceholder.typicode.com](https://jsonplaceholder.typicode.com), runnable
+headlessly via Newman or interactively in the Postman UI.
 
-**Steps to cover:**
+## Files
 
-1. GET `/posts` (list all posts)
-2. POST `/posts` (create a new post)
-3. PUT `/posts/{id}` (update a post)
-4. DELETE `/posts/{id}` (delete a post)
+| File | Purpose |
+|------|---------|
+| `jsonplaceholder-posts.postman_collection.json` | Collection: requests + `pm.test` assertions |
+| `jsonplaceholder.postman_environment.json` | Environment: `baseUrl`, `existingPostId` |
+| `results/` | Target for generated reports — git-ignored, only `.gitkeep` is committed |
 
-**Choose your approach:**
+## Run headless (Newman)
 
-- Postman collection + environment
-- Newman script
-- Raw HTTP requests with assertions
-- Any other API testing tool/method you prefer
+```bash
+npm run test:api
+```
 
-**Requirements:**
+which is equivalent to:
 
-- Test all 4 HTTP methods above
-- Include meaningful assertions (status codes, response structure, etc.)
-- Use variables/dynamic data where appropriate
-- Document your approach in comments or README
+```bash
+npx newman run newman/jsonplaceholder-posts.postman_collection.json \
+  -e newman/jsonplaceholder.postman_environment.json
+```
 
-**Estimated time:** 30 minutes or less
+Optional JSON report (what CI does):
 
-**Resources:**
+```bash
+npm run test:api -- --reporters cli,json --reporter-json-export newman/results/newman-report.json
+```
 
-- [Postman Docs](https://learning.postman.com/docs/)
-- [Newman Docs](https://learning.postman.com/docs/running-collections/using-newman-cli/)
-- [JSONPlaceholder Guide](https://jsonplaceholder.typicode.com/guide/)
+## Run in the Postman UI
 
-**Have fun!**
+Import both JSON files (File → Import), select the **JSONPlaceholder (public)**
+environment, and run the collection with the Collection Runner.
+
+## Coverage
+
+| Request | What it proves |
+|---------|----------------|
+| `GET /posts` | Full seeded collection: 100 posts, unique ids 1..100, complete schema, authors within the 10 seeded users |
+| `GET /posts/{{existingPostId}}` | Single read round-trips the requested id with a complete schema |
+| `POST /posts` | Fake create: 201, echoes a per-run unique payload, assigns an id beyond the seeded range |
+| `PUT /posts/{{existingPostId}}` | Fake full replace: 200, id stays stable, replacement document echoed with valid types |
+| `DELETE /posts/{{existingPostId}}` | Fake delete: 200 with an empty object body |
+| `GET /posts/999999` | Deterministic 404 with `{}` body for unknown ids |
+| `GET /posts?userId=1` | Server-side filter returns exactly the author's 10 seeded posts and nobody else's |
+
+## Design notes
+
+- **Fake persistence, by design.** JSONPlaceholder simulates writes: POST/PUT/DELETE
+  respond realistically but store nothing. All write-path assertions target the
+  *response contract* (status, content type, echoed payload, id rules). No test
+  re-reads the API expecting a write to have stuck, and no test depends on a
+  previous request's side effects — each request stands alone.
+- **Dynamic data where it pays off.** The POST payload is generated per run
+  (timestamped title/body) so the echo assertions cannot pass against stale or
+  hardcoded data. The PUT payload is static-but-distinctive on purpose: one
+  dynamic example demonstrates the technique, a second would just cost readability.
+- **Shared helpers.** A collection-level script defines `expectJsonContentType`
+  and `expectPostShape`, used by every request — one place to update if the
+  contract grows.
+- **Variables.** `baseUrl` and `existingPostId` live in the environment, so the
+  collection itself never hardcodes a host and can be pointed elsewhere.

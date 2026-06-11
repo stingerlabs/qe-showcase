@@ -3,12 +3,18 @@
   "version": "1.0.0",
   "description": "Tooling for QE showcase: Cypress and Newman included for candidate convenience.",
   "private": true,
+  "engines": {
+    "node": "20.x || 22.x || >=24.x",
+    "npm": ">=10"
+  },
   "scripts": {
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "newman": "newman run ./your-collection.json"
+    "test:ui": "npm run cypress:run",
+    "test:api": "newman run newman/jsonplaceholder-posts.postman_collection.json -e newman/jsonplaceholder.postman_environment.json",
+    "test:all": "npm run test:api && npm run test:ui"
   },
-  "dependencies": {
+  "devDependencies": {
     "cypress": "^15.16.0",
     "newman": "^6.2.2"
   }

@@ -1,25 +1,15 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
+// Custom commands for the SauceDemo suite.
 //
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
+// SauceDemo ships stable `data-test` attributes on almost every element, so
+// all selectors go through `getByDataTest` instead of CSS classes or DOM
+// position. If the app's markup changes, tests fail on a missing data-test
+// hook (clear signal) rather than silently matching the wrong element.
 //
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+// Page-level actions and selectors live in the page objects under
+// cypress/pages/ — this file only holds the selector strategy they build on.
+
+/**
+ * Select an element by its `data-test` attribute.
+ * Usage: cy.getByDataTest('login-button')
+ */
+Cypress.Commands.add("getByDataTest", (value) => cy.get(`[data-test="${value}"]`));
